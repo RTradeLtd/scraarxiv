@@ -8,7 +8,9 @@ import (
 	arxiv "github.com/orijtech/arxiv/v1"
 )
 
-func Search(term string, maxPageNumbers int64) error {
+// Search is used to perform a search against arxiv
+func Search(term string, maxPageNumbers int64) ([]string, error) {
+	var urlsToScrape []string
 	// construct our query and generate a channel to receive data one
 	responseChannel, cancel, err := arxiv.Search(
 		context.Background(),
@@ -18,7 +20,7 @@ func Search(term string, maxPageNumbers int64) error {
 		})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	for page := range responseChannel {
@@ -27,10 +29,12 @@ func Search(term string, maxPageNumbers int64) error {
 			fmt.Printf("error occured: %s\n", err)
 			continue
 		}
-		fmt.Println(page.Feed)
+		for _, entry := range page.Feed.Entry {
+			urlsToScrape = append(urlsToScrape, entry.ID)
+		}
 		if page.PageNumber > 5 {
 			cancel()
 		}
 	}
-	return nil
+	return urlsToScrape, nil
 }
