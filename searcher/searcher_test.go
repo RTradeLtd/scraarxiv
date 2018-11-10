@@ -12,5 +12,6 @@ func TestSearcher(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	fmt.Println(urls)
+	pdfURLs := searcher.ExtractPDFURLs(urls)
+	fmt.Println(pdfURLs)
 }

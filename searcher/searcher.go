@@ -4,8 +4,13 @@ package searcher
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	arxiv "github.com/orijtech/arxiv/v1"
+)
+
+const (
+	basePDFURL = "https://arxiv.org/pdf"
 )
 
 // Search is used to perform a search against arxiv
@@ -37,4 +42,15 @@ func Search(term string, maxPageNumbers int64) ([]string, error) {
 		}
 	}
 	return urlsToScrape, nil
+}
+
+// ExtractPDFURLs is used to take an arxiv paper url, and get its pdf download equivalent
+func ExtractPDFURLs(urls []string) []string {
+	var pdfURLs []string
+	for _, v := range urls {
+		split := strings.Split(v, "/")
+		url := fmt.Sprintf("%s/%s", basePDFURL, split[len(split)-1])
+		pdfURLs = append(pdfURLs, url)
+	}
+	return pdfURLs
 }
