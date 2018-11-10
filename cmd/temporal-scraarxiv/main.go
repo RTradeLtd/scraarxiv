@@ -1,4 +1,4 @@
-package scraarxiv
+package main
 
 import (
 	"log"
