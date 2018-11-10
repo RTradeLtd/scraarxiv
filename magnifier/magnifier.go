@@ -43,6 +43,7 @@ func (g *Glass) Magnify(urls []string) error {
 		return err
 	}
 	var hashes []string
+	// add the files to ipfs, but do not pin
 	for _, v := range filePaths {
 		fmt.Println("adding file ", v)
 		file, err := os.Open(v)
@@ -55,6 +56,7 @@ func (g *Glass) Magnify(urls []string) error {
 		}
 		hashes = append(hashes, resp)
 	}
+	// index the content with Lens
 	for _, v := range hashes {
 		if _, err := g.l.SubmitIndexRequest(
 			context.Background(),
@@ -65,6 +67,7 @@ func (g *Glass) Magnify(urls []string) error {
 			return err
 		}
 	}
+	//TODO: pin the content
 	fmt.Println("hashes ", hashes)
 	return nil
 }
