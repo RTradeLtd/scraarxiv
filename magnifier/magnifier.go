@@ -44,11 +44,12 @@ func (g *Glass) Magnify(urls []string, maxDownloads int) error {
 		if err != nil {
 			continue
 		}
-		defer resp.Body.Close()
-		hash, err := g.s.AddNoPin(resp.Body)
+		hash, err := g.s.Add(resp.Body)
 		if err != nil {
+			resp.Body.Close()
 			continue
 		}
+		resp.Body.Close()
 		hashes = append(hashes, hash)
 	}
 	fmt.Println("indexing content in lens")

@@ -168,24 +168,21 @@ func Search(term string, maxPageNumbers int64, maxCategories int) (map[string][]
 					},
 				},
 			})
-
 		if err != nil {
 			return nil, err
 		}
-
 		for page := range responseChannel {
 			// if this page had an error, skip it
 			if err = page.Err; err != nil {
 				fmt.Printf("error occured: %s\n", err)
+				cancel()
 				continue
 			}
 			for _, entry := range page.Feed.Entry {
 				urlsToScrape[fmt.Sprintf("%s", v)] = append(urlsToScrape[fmt.Sprintf("%s", v)], entry.ID)
 			}
-			if page.PageNumber > 5 {
-				cancel()
-			}
 		}
+		cancel()
 	}
 	return urlsToScrape, nil
 }

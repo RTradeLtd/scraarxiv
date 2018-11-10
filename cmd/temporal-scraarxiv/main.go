@@ -45,7 +45,6 @@ var commands = map[string]cmd.Cmd{
 				pdfURLs := searcher.ExtractPDFURLs(v)
 				glass.Magnify(pdfURLs, defaultMaxDownload)
 			}
-			select {}
 		},
 	},
 }
