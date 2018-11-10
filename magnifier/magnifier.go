@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/RTradeLtd/config"
 	ipfsapi "github.com/RTradeLtd/go-ipfs-api"
@@ -40,28 +41,28 @@ func (g *Glass) Magnify(urls []string, maxDownloads int) error {
 	fmt.Println("downloading files")
 	var hashes []string
 	for _, v := range urls {
+		time.Sleep(time.Second * 15)
+		fmt.Println("downloading pdf from url ", v)
 		resp, err := http.Get(v)
 		if err != nil {
 			continue
 		}
+		fmt.Println("adding pdf to ipfs")
 		hash, err := g.s.Add(resp.Body)
 		if err != nil {
 			resp.Body.Close()
 			continue
 		}
+		fmt.Println("closing connection to arxiv")
 		resp.Body.Close()
-		hashes = append(hashes, hash)
-	}
-	fmt.Println("indexing content in lens")
-	// index the content with Lens
-	for _, v := range hashes {
+		fmt.Println("indexing content hash ", hash)
 		if _, err := g.l.SubmitIndexRequest(
 			context.Background(),
 			&pb.IndexRequest{
 				DataType:         "ipld",
-				ObjectIdentifier: v},
+				ObjectIdentifier: hash},
 		); err != nil {
-			fmt.Println("error encountered processing ", err)
+			fmt.Printf("error encountered processing hash %s with error %s\n", hash, err)
 			continue
 		}
 	}
