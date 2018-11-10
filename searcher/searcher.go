@@ -148,6 +148,7 @@ var (
 func Search(term string, maxPageNumbers int64, maxCategories int) ([]string, error) {
 	var urlsToScrape []string
 	for i, v := range categories {
+		fmt.Println("downloading category ", v)
 		if maxCategories != 0 && i > maxCategories {
 			break
 		}

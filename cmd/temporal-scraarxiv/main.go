@@ -37,7 +37,7 @@ var commands = map[string]cmd.Cmd{
 				log.Fatal(err)
 			}
 			fmt.Println("searching")
-			urls, err := searcher.Search(args["searchTerms"], pageCountInt, 1)
+			urls, err := searcher.Search(args["searchTerms"], pageCountInt, 0)
 			if err != nil {
 				log.Fatal(err)
 			}
