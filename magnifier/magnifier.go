@@ -50,6 +50,7 @@ func (g *Glass) Magnify(urls []string, maxDownloads int) error {
 		if err != nil {
 			continue
 		}
+		defer file.Close()
 		resp, err := g.s.AddNoPin(file)
 		if err != nil {
 			continue
