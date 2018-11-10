@@ -8,7 +8,7 @@ lens:
 .PHONY: cli
 cli:
 	@echo "===================  building Scraarxiv CLI  ==================="
-	rm -f lens temporal-lens
+	rm -f temporal-scraarxiv
 	go build -ldflags "-X main.Version=$(LENSVERSION)" ./cmd/temporal-scraarxiv
 	@echo "===================          done           ==================="
 

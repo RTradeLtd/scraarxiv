@@ -145,9 +145,12 @@ var (
 )
 
 // Search is used to perform a search against arxiv
-func Search(term string, maxPageNumbers int64) ([]string, error) {
+func Search(term string, maxPageNumbers int64, maxCategories int) ([]string, error) {
 	var urlsToScrape []string
-	for _, v := range categories {
+	for i, v := range categories {
+		if maxCategories != 0 && i > maxCategories {
+			break
+		}
 		// construct our query and generate a channel to receive data one
 		responseChannel, cancel, err := arxiv.Search(
 			context.Background(),

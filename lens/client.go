@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	defaultURL = "127.0.0.1:9998"
+	defaultURL = "0.0.0.0:9998"
 )
 
 // Client is a lens client used to make requests to the Lens gRPC server

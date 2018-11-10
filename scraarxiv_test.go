@@ -10,6 +10,7 @@ import (
 )
 
 const (
+	defaultMax     = 10
 	testConfigPath = "test/config.json"
 	testURL1       = "http://arxiv.org/pdf/1711.03577v1"
 	testURL2       = "http://arxiv.org/pdf/1801.07883v2"
@@ -35,7 +36,7 @@ func TestScraarxivNoSearch(t *testing.T) {
 		t.Fatal(err)
 	}
 	// test the download
-	files, err := glass.DownloadFiles(urls)
+	files, err := glass.DownloadFiles(urls, defaultMax)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -64,7 +65,7 @@ func TestScraarxivSearch(t *testing.T) {
 		t.Fatal("failed to get pdf urls")
 	}
 	fmt.Println("manigfying files")
-	if err = glass.Magnify(pdfURLs); err != nil {
+	if err = glass.Magnify(pdfURLs, defaultMax); err != nil {
 		t.Fatal(err)
 	}
 }

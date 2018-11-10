@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -13,6 +14,8 @@ import (
 )
 
 var (
+	defaultSearchTerm  = "deep learning"
+	defaultMaxDownload = 100000000000000000
 	// Version denotes the tag of this build
 	Version string
 
@@ -28,16 +31,20 @@ var commands = map[string]cmd.Cmd{
 			if err != nil {
 				log.Fatal(err)
 			}
+			fmt.Println("generating glass client")
 			glass, err := magnifier.NewGlassClient(&cfg)
 			if err != nil {
 				log.Fatal(err)
 			}
-			urls, err := searcher.Search(args["searchTerms"], pageCountInt)
+			fmt.Println("searching")
+			urls, err := searcher.Search(args["searchTerms"], pageCountInt, 1)
 			if err != nil {
 				log.Fatal(err)
 			}
+			fmt.Println("extracting pdf urls")
 			pdfURLs := searcher.ExtractPDFURLs(urls)
-			if err = glass.Magnify(pdfURLs); err != nil {
+			fmt.Println("initiating magnification")
+			if err = glass.Magnify(pdfURLs, defaultMaxDownload); err != nil {
 				log.Fatal(err)
 			}
 		},
@@ -66,7 +73,7 @@ func main() {
 	}
 	searchTerms := os.Getenv("SEARCH_TERMS")
 	if searchTerms == "" {
-		log.Fatal("SEARCH_TERMS env var is empty")
+		searchTerms = defaultSearchTerm
 	}
 	pageCount := os.Getenv("PAGE_COUNT")
 	if pageCount == "" {

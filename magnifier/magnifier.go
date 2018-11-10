@@ -36,9 +36,9 @@ func NewGlassClient(cfg *config.TemporalConfig) (*Glass, error) {
 }
 
 // Magnify is used to take a PDF urls, download it, inject into Temporal pin system, and index with Lens
-func (g *Glass) Magnify(urls []string) error {
+func (g *Glass) Magnify(urls []string, maxDownloads int) error {
 	fmt.Println("downloading files")
-	filePaths, err := g.DownloadFiles(urls)
+	filePaths, err := g.DownloadFiles(urls, maxDownloads)
 	if err != nil {
 		return err
 	}
@@ -56,6 +56,7 @@ func (g *Glass) Magnify(urls []string) error {
 		}
 		hashes = append(hashes, resp)
 	}
+	fmt.Println("indexing content in lens")
 	// index the content with Lens
 	for _, v := range hashes {
 		if _, err := g.l.SubmitIndexRequest(
@@ -64,7 +65,8 @@ func (g *Glass) Magnify(urls []string) error {
 				DataType:         "ipld",
 				ObjectIdentifier: v},
 		); err != nil {
-			return err
+			fmt.Println("error encountered processing ", err)
+			continue
 		}
 	}
 	//TODO: pin the content
