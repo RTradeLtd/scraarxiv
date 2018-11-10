@@ -25,6 +25,7 @@ var (
 )
 
 func TestScraarxivNoSearch(t *testing.T) {
+	t.Skip()
 	cfg, err := config.LoadConfig(testConfigPath)
 	if err != nil {
 		t.Fatal(err)
@@ -42,22 +43,27 @@ func TestScraarxivNoSearch(t *testing.T) {
 }
 
 func TestScraarxivSearch(t *testing.T) {
+	fmt.Println("loading config")
 	cfg, err := config.LoadConfig(testConfigPath)
 	if err != nil {
 		t.Fatal(err)
 	}
+	fmt.Println("loading glass client")
 	glass, err := magnifier.NewGlassClient(cfg)
 	if err != nil {
 		t.Fatal(err)
 	}
-	urls, err := searcher.Search("deep learning", 5)
+	fmt.Println("running searcher")
+	urls, err := searcher.Search("deep learning", 1)
 	if err != nil {
 		t.Fatal(err)
 	}
+	fmt.Println("extracting pdf urls")
 	pdfURLs := searcher.ExtractPDFURLs(urls)
 	if len(pdfURLs) == 0 {
 		t.Fatal("failed to get pdf urls")
 	}
+	fmt.Println("manigfying files")
 	if err = glass.Magnify(pdfURLs); err != nil {
 		t.Fatal(err)
 	}

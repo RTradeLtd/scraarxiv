@@ -3,6 +3,7 @@ package magnifier
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/RTradeLtd/config"
 	ipfsapi "github.com/RTradeLtd/go-ipfs-api"
@@ -34,5 +35,24 @@ func NewGlassClient(cfg *config.TemporalConfig) (*Glass, error) {
 
 // Magnify is used to take a PDF urls, download it, inject into Temporal pin system, and index with Lens
 func (g *Glass) Magnify(urls []string) error {
+	fmt.Println("downloading files")
+	filePaths, err := g.DownloadFiles(urls)
+	if err != nil {
+		return err
+	}
+	var hashes []string
+	for _, v := range filePaths {
+		fmt.Println("adding file ", v)
+		file, err := os.Open(v)
+		if err != nil {
+			continue
+		}
+		resp, err := g.s.AddNoPin(file)
+		if err != nil {
+			continue
+		}
+		hashes = append(hashes, resp)
+	}
+	fmt.Println("hashes ", hashes)
 	return nil
 }
