@@ -45,6 +45,7 @@ func (g *Glass) Magnify(urls []string, maxDownloads int) error {
 		fmt.Println("downloading pdf from url ", v)
 		resp, err := http.Get(v)
 		if err != nil {
+			fmt.Println("error occured download file ", err)
 			continue
 		}
 		fmt.Println("adding pdf to ipfs")
