@@ -2,11 +2,13 @@
 package magnifier
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/RTradeLtd/config"
 	ipfsapi "github.com/RTradeLtd/go-ipfs-api"
+	pb "github.com/RTradeLtd/grpc/lens/request"
 	"github.com/RTradeLtd/scraarxiv/lens"
 )
 
@@ -52,6 +54,16 @@ func (g *Glass) Magnify(urls []string) error {
 			continue
 		}
 		hashes = append(hashes, resp)
+	}
+	for _, v := range hashes {
+		if _, err := g.l.SubmitIndexRequest(
+			context.Background(),
+			&pb.IndexRequest{
+				DataType:         "ipld",
+				ObjectIdentifier: v},
+		); err != nil {
+			return err
+		}
 	}
 	fmt.Println("hashes ", hashes)
 	return nil
