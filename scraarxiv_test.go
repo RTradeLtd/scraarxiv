@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/orijtech/arxiv/v1"
+
 	"github.com/RTradeLtd/config"
 	"github.com/RTradeLtd/scraarxiv/magnifier"
 	"github.com/RTradeLtd/scraarxiv/searcher"
@@ -25,24 +27,6 @@ var (
 	urls = []string{testURL1, testURL2, testURL3, testURL4, testURL4, testURL5, testURL6, testURL7}
 )
 
-func TestScraarxivNoSearch(t *testing.T) {
-	t.Skip()
-	cfg, err := config.LoadConfig(testConfigPath)
-	if err != nil {
-		t.Fatal(err)
-	}
-	glass, err := magnifier.NewGlassClient(cfg)
-	if err != nil {
-		t.Fatal(err)
-	}
-	// test the download
-	files, err := glass.DownloadFiles(urls, defaultMax)
-	if err != nil {
-		t.Fatal(err)
-	}
-	fmt.Println(files)
-}
-
 func TestScraarxivSearch(t *testing.T) {
 	fmt.Println("loading config")
 	cfg, err := config.LoadConfig(testConfigPath)
@@ -55,12 +39,12 @@ func TestScraarxivSearch(t *testing.T) {
 		t.Fatal(err)
 	}
 	fmt.Println("running searcher")
-	urls, err := searcher.Search("deep learning", 1)
+	urls, err := searcher.Search("deep learning", 1, 1)
 	if err != nil {
 		t.Fatal(err)
 	}
 	fmt.Println("extracting pdf urls")
-	pdfURLs := searcher.ExtractPDFURLs(urls)
+	pdfURLs := searcher.ExtractPDFURLs(urls[fmt.Sprintf("%s", arxiv.ClassicalPhysics)])
 	if len(pdfURLs) == 0 {
 		t.Fatal("failed to get pdf urls")
 	}

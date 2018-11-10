@@ -42,12 +42,8 @@ var commands = map[string]cmd.Cmd{
 				log.Fatal(err)
 			}
 			for _, v := range urls {
-				urls := v
-				go func() {
-					fmt.Println("extracting pdf from urls")
-					pdfURLs := searcher.ExtractPDFURLs(urls)
-					glass.Magnify(pdfURLs, defaultMaxDownload)
-				}()
+				pdfURLs := searcher.ExtractPDFURLs(v)
+				glass.Magnify(pdfURLs, defaultMaxDownload)
 			}
 			select {}
 		},
