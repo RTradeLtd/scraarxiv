@@ -145,10 +145,12 @@ var (
 )
 
 // Search is used to perform a search against arxiv
-func Search(term string, maxPageNumbers int64, maxCategories int) ([]string, error) {
-	var urlsToScrape []string
+func Search(term string, maxPageNumbers int64, maxCategories int) (map[string][]string, error) {
+	//var urlsToScrape []string
+	urlsToScrape := make(map[string][]string)
+
 	for i, v := range categories {
-		fmt.Println("downloading category ", v)
+		fmt.Println("fetching urls for category ", v)
 		if maxCategories != 0 && i > maxCategories {
 			break
 		}
@@ -178,7 +180,7 @@ func Search(term string, maxPageNumbers int64, maxCategories int) ([]string, err
 				continue
 			}
 			for _, entry := range page.Feed.Entry {
-				urlsToScrape = append(urlsToScrape, entry.ID)
+				urlsToScrape[fmt.Sprintf("%s", v)] = append(urlsToScrape[fmt.Sprintf("%s", v)], entry.ID)
 			}
 			if page.PageNumber > 5 {
 				cancel()
