@@ -8,7 +8,7 @@ import (
 )
 
 func TestSearcher(t *testing.T) {
-	urls, err := searcher.Search("deep learning", 5)
+	urls, err := searcher.Search("deep learning", 1)
 	if err != nil {
 		t.Fatal(err)
 	}

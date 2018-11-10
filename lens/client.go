@@ -24,6 +24,7 @@ func NewClient(opts config.Endpoints) (*Client, error) {
 	dialOpts := make([]grpc.DialOption, 0)
 	// setup parameters for our conection to
 	if opts.Lens.TLS.CertPath != "" {
+		fmt.Println("using secure connection")
 		creds, err := credentials.NewClientTLSFromFile(opts.Lens.TLS.CertPath, "")
 		if err != nil {
 			return nil, fmt.Errorf("could not load tls cert: %s", err)
@@ -32,12 +33,14 @@ func NewClient(opts config.Endpoints) (*Client, error) {
 			grpc.WithTransportCredentials(creds),
 			grpc.WithPerRPCCredentials(dialer.NewCredentials(opts.Lens.AuthKey, false)))
 	} else {
+		fmt.Println("using insecure connection")
 		dialOpts = append(dialOpts, grpc.WithInsecure())
 	}
 	var url string
 	if opts.Lens.URL == "" {
 		url = defaultURL
 	}
+	fmt.Println(url)
 	gConn, err := grpc.Dial(url, dialOpts...)
 	if err != nil {
 		return nil, err
